@@ -19,4 +19,10 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = new MainViewModel();
     }
+
+    private void OpenChatWindow_Click(object sender, RoutedEventArgs e)
+    {
+        var chatWindow = new ChatWindow();
+        chatWindow.Show();
+    }
 }
