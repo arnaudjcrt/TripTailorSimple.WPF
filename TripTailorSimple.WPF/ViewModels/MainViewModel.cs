@@ -1,86 +1,75 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using TripTailorSimple.WPF.Models;
-using TripTailorSimple.WPF.Services;
+using TripTailorSimple.WPF.Services.Interfaces;
+using TripTailorSimple.WPF.ViewModels.Base;
 
 namespace TripTailorSimple.WPF.ViewModels;
 
-public class MainViewModel : INotifyPropertyChanged
+public class MainViewModel : ViewModelBase
 {
-    private readonly DestinationService _destinationService;
-    private readonly WeatherService _weatherService;
+    private readonly ITripSearchService _tripSearchService;
+    private readonly TripDetailViewModel _detailViewModel;
 
-    public ObservableCollection<TripResult> Results { get; set; } = new();
+    public SearchViewModel SearchViewModel { get; }
+    public ResultsViewModel ResultsViewModel { get; }
 
-    public List<string> Regions { get; } = new() { "Toutes", "Europe", "Afrique", "Asie", "Amérique" };
-
-    private string _selectedRegion = "Toutes";
-    public string SelectedRegion
+    private ViewModelBase _currentPageViewModel;
+    public ViewModelBase CurrentPageViewModel
     {
-        get => _selectedRegion;
-        set
-        {
-            _selectedRegion = value;
-            OnPropertyChanged();
-        }
+        get => _currentPageViewModel;
+        set => SetProperty(ref _currentPageViewModel, value);
     }
 
-    private int _budget = 1000;
-    public int Budget
+    private bool _isLoading;
+    public bool IsLoading
     {
-        get => _budget;
-        set
-        {
-            _budget = value;
-            OnPropertyChanged();
-        }
+        get => _isLoading;
+        set => SetProperty(ref _isLoading, value);
     }
+
+    public string StatusMessage => IsLoading ? "Recherche en cours..." : string.Empty;
 
     public ICommand SearchCommand { get; }
 
-    public MainViewModel()
+    public MainViewModel(ITripSearchService tripSearchService, TripDetailViewModel detailViewModel)
     {
-        _destinationService = new DestinationService();
-        _weatherService = new WeatherService();
+        _tripSearchService = tripSearchService;
+        _detailViewModel = detailViewModel;
 
-        SearchCommand = new RelayCommand(async () => await SearchAsync());
+        SearchViewModel = new SearchViewModel();
+        ResultsViewModel = new ResultsViewModel();
+
+        _currentPageViewModel = SearchViewModel;
+
+        SearchCommand = new RelayCommand(async () => await ExecuteSearchAsync(), () => !IsLoading);
+
+        ResultsViewModel.DetailRequested += async proposal => await OpenDetailAsync(proposal);
+        ResultsViewModel.BackRequested += () => CurrentPageViewModel = SearchViewModel;
+        _detailViewModel.BackRequested += () => CurrentPageViewModel = ResultsViewModel;
     }
 
-    private async Task SearchAsync()
+    private async Task ExecuteSearchAsync()
     {
-        Results.Clear();
+        IsLoading = true;
+        OnPropertyChanged(nameof(StatusMessage));
 
-        List<Destination> destinations = _destinationService.GetDestinations();
-
-        if (SelectedRegion != "Toutes")
+        try
         {
-            destinations = destinations.Where(d => d.Region == SelectedRegion).ToList();
+            SearchCriteria criteria = SearchViewModel.BuildCriteria();
+            var proposals = await _tripSearchService.SearchAsync(criteria);
+            ResultsViewModel.SetResults(proposals);
+            CurrentPageViewModel = ResultsViewModel;
         }
-
-        destinations = destinations.Where(d => d.EstimatedPrice <= Budget).ToList();
-
-        foreach (var destination in destinations)
+        finally
         {
-            double temp = await _weatherService.GetAverageTemperatureAsync(destination.Latitude, destination.Longitude);
-
-            Results.Add(new TripResult
-            {
-                City = destination.City,
-                Country = destination.Country,
-                Region = destination.Region,
-                Description = destination.Description,
-                EstimatedPrice = destination.EstimatedPrice,
-                AverageTemperature = temp
-            });
+            IsLoading = false;
+            OnPropertyChanged(nameof(StatusMessage));
         }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
+    private async Task OpenDetailAsync(TripProposal proposal)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        await _detailViewModel.LoadAsync(proposal);
+        CurrentPageViewModel = _detailViewModel;
     }
 }

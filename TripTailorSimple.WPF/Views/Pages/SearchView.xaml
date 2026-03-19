@@ -1,0 +1,106 @@
+<UserControl x:Class="TripTailorSimple.WPF.Views.Pages.SearchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFF8FBFF" Offset="0"/>
+                <GradientStop Color="#FFEFF4FF" Offset="0.5"/>
+                <GradientStop Color="#FFF5FFF6" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8">
+            <StackPanel>
+                <Border Background="#4F5BD5" CornerRadius="16" Padding="20" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="TripTailor ✈️" FontSize="16" Foreground="White" FontWeight="SemiBold"/>
+                        <TextBlock Text="Crée un voyage incroyable en 3 clics"
+                                   FontSize="30"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   Margin="0,8,0,2"/>
+                        <TextBlock Text="Budget, climat, style : on te propose directement les meilleures destinations."
+                                   Foreground="#E9EEFF"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White" CornerRadius="16" Padding="18" BorderBrush="#E6ECF5" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="Filtres de recherche" FontSize="20" FontWeight="Bold" Margin="0,0,0,12"/>
+
+                        <UniformGrid Columns="2" Margin="0,0,0,12">
+                            <StackPanel Margin="0,0,12,10">
+                                <TextBlock Text="Budget max (€)" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding Budget, UpdateSourceTrigger=PropertyChanged}" Padding="10,6" Margin="0,6,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,10">
+                                <TextBlock Text="Durée (jours)" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding DurationDays, UpdateSourceTrigger=PropertyChanged}" Padding="10,6" Margin="0,6,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,12,10">
+                                <TextBlock Text="Saison" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding Seasons}" SelectedItem="{Binding SelectedSeason}" Margin="0,6,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,10">
+                                <TextBlock Text="Climat" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding Climates}" SelectedItem="{Binding SelectedClimate}" Margin="0,6,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,12,0">
+                                <TextBlock Text="Type de voyage" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding TripTypes}" SelectedItem="{Binding SelectedTripType}" Margin="0,6,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel>
+                                <TextBlock Text="Style" FontWeight="SemiBold"/>
+                                <WrapPanel Margin="0,6,0,0">
+                                    <Button Content="Économie" Margin="0,0,8,8" Padding="12,6" Command="{Binding SelectStyleCommand}" CommandParameter="Économie"/>
+                                    <Button Content="Confort" Margin="0,0,8,8" Padding="12,6" Command="{Binding SelectStyleCommand}" CommandParameter="Confort"/>
+                                    <Button Content="Luxe" Margin="0,0,8,8" Padding="12,6" Command="{Binding SelectStyleCommand}" CommandParameter="Luxe"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <TextBlock Text="Continents / régions" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <ItemsControl ItemsSource="{Binding Regions}" Margin="0,0,0,10">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,10,8" Padding="10,6" CornerRadius="14" BorderBrush="#D9E2F2" BorderThickness="1">
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <WrapPanel Margin="0,0,0,16">
+                            <CheckBox Content="Inclure vol" IsChecked="{Binding IncludeFlight}" Margin="0,0,18,8"/>
+                            <CheckBox Content="Inclure hôtel" IsChecked="{Binding IncludeHotel}" Margin="0,0,18,8"/>
+                            <CheckBox Content="Inclure activités" IsChecked="{Binding IncludeActivities}" Margin="0,0,18,8"/>
+                        </WrapPanel>
+
+                        <Button Content="🚀 Rechercher des séjours"
+                                Height="44"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Background="#4F5BD5"
+                                Foreground="White"
+                                BorderBrush="#4F5BD5"
+                                Command="{Binding DataContext.SearchCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
