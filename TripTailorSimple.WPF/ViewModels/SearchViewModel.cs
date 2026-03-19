@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using TripTailorSimple.WPF.Models;
@@ -78,7 +80,7 @@ public class SearchViewModel : ViewModelBase
             return;
         }
 
-        string text = QuickRequest.ToLowerInvariant();
+        string text = NormalizeForMatching(QuickRequest);
 
         var budgetMatch = Regex.Match(text, @"(\d{3,5})\s*€?");
         if (budgetMatch.Success && int.TryParse(budgetMatch.Groups[1].Value, out int parsedBudget))
@@ -96,25 +98,42 @@ public class SearchViewModel : ViewModelBase
         else if (text.Contains("chaud") || text.Contains("soleil")) SelectedClimate = "Chaud";
         else if (text.Contains("temp") || text.Contains("doux")) SelectedClimate = "Tempéré";
 
-        if (text.Contains("eco") || text.Contains("pas cher") || text.Contains("économie")) SelectedTravelStyle = "Économie";
+        if (text.Contains("eco") || text.Contains("pas cher") || text.Contains("economie")) SelectedTravelStyle = "Économie";
         else if (text.Contains("luxe") || text.Contains("premium")) SelectedTravelStyle = "Luxe";
         else if (text.Contains("confort")) SelectedTravelStyle = "Confort";
 
         if (text.Contains("nature")) SelectedTripType = "Nature";
         else if (text.Contains("culture")) SelectedTripType = "Culture";
-        else if (text.Contains("detente") || text.Contains("détente") || text.Contains("relax")) SelectedTripType = "Détente";
+        else if (text.Contains("detente") || text.Contains("relax")) SelectedTripType = "Détente";
         else if (text.Contains("city") || text.Contains("ville")) SelectedTripType = "City Break";
 
-        if (text.Contains("été")) SelectedSeason = "Été";
+        if (text.Contains("ete")) SelectedSeason = "Été";
         else if (text.Contains("hiver")) SelectedSeason = "Hiver";
         else if (text.Contains("printemps")) SelectedSeason = "Printemps";
         else if (text.Contains("automne")) SelectedSeason = "Automne";
 
-        if (text.Contains("oceanie") || text.Contains("océanie")) SelectOnlyRegion("Océanie");
+        if (text.Contains("oceanie")) SelectOnlyRegion("Océanie");
         else if (text.Contains("europe")) SelectOnlyRegion("Europe");
         else if (text.Contains("asie")) SelectOnlyRegion("Asie");
         else if (text.Contains("afrique")) SelectOnlyRegion("Afrique");
-        else if (text.Contains("amerique") || text.Contains("amérique")) SelectOnlyRegion("Amérique");
+        else if (text.Contains("amerique")) SelectOnlyRegion("Amérique");
+    }
+
+
+    private static string NormalizeForMatching(string input)
+    {
+        string normalized = input.ToLowerInvariant().Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder(normalized.Length);
+
+        foreach (char c in normalized)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+            {
+                builder.Append(c);
+            }
+        }
+
+        return builder.ToString().Normalize(NormalizationForm.FormC);
     }
 
     private void SelectOnlyRegion(string regionName)
