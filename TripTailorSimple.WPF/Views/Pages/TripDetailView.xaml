@@ -1,0 +1,64 @@
+<UserControl x:Class="TripTailorSimple.WPF.Views.Pages.TripDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <Button Content="← Retour aux résultats" Width="180" Command="{Binding BackToResultsCommand}" Margin="0,0,0,10"/>
+
+            <TextBlock Text="{Binding Proposal.City}" FontSize="30" FontWeight="Bold"/>
+            <TextBlock Text="{Binding Proposal.Country}" FontSize="20" Foreground="Gray" Margin="0,0,0,8"/>
+            <TextBlock Text="{Binding Proposal.Description}" TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+            <UniformGrid Columns="3" Margin="0,0,0,12">
+                <Border BorderBrush="#DDD" BorderThickness="1" Padding="8" Margin="0,0,8,0"><TextBlock Text="{Binding Proposal.EstimatedFlightPrice, StringFormat=Vol: {0} €}"/></Border>
+                <Border BorderBrush="#DDD" BorderThickness="1" Padding="8" Margin="0,0,8,0"><TextBlock Text="{Binding Proposal.EstimatedHotelPrice, StringFormat=Hôtel: {0} €}"/></Border>
+                <Border BorderBrush="#DDD" BorderThickness="1" Padding="8"><TextBlock Text="{Binding Proposal.EstimatedActivityPrice, StringFormat=Activités: {0} €}"/></Border>
+            </UniformGrid>
+
+            <TextBlock Text="Prévisions météo" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,8"/>
+            <ItemsControl ItemsSource="{Binding Forecast}" Margin="0,0,0,10">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Date}" />
+                            <TextBlock Text=" : " />
+                            <TextBlock Text="{Binding Summary}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Text="Idées d'activités payantes" FontWeight="SemiBold"/>
+            <ItemsControl ItemsSource="{Binding Proposal.PaidActivities}" Margin="0,4,0,8"/>
+
+            <TextBlock Text="Idées gratuites" FontWeight="SemiBold"/>
+            <ItemsControl ItemsSource="{Binding Proposal.FreeActivities}" Margin="0,4,0,8"/>
+
+            <TextBlock Text="Planning suggéré" FontWeight="SemiBold"/>
+            <ItemsControl ItemsSource="{Binding Proposal.SuggestedPlan}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="#EEE" BorderThickness="1" Padding="8" Margin="0,4,0,0">
+                            <StackPanel>
+                                <TextBlock Text="{Binding DayNumber, StringFormat=Jour {0}}" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding Morning, StringFormat=Matin : {0}}"/>
+                                <TextBlock Text="{Binding Afternoon, StringFormat=Après-midi : {0}}"/>
+                                <TextBlock Text="{Binding Evening, StringFormat=Soir : {0}}"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                <Button Content="Vols" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Proposal.FlightLink}" Margin="0,0,8,0"/>
+                <Button Content="Hôtels" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Proposal.HotelLink}" Margin="0,0,8,0"/>
+                <Button Content="Activités" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Proposal.ActivitiesLink}" Margin="0,0,8,0"/>
+                <Button Content="Wikipedia" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Proposal.WikipediaLink}"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

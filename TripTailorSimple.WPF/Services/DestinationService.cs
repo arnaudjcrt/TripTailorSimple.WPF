@@ -1,10 +1,11 @@
-﻿using System.IO;
+using System.IO;
 using System.Text.Json;
 using TripTailorSimple.WPF.Models;
+using TripTailorSimple.WPF.Services.Interfaces;
 
 namespace TripTailorSimple.WPF.Services;
 
-public class DestinationService
+public class DestinationService : IDestinationService
 {
     public List<Destination> GetDestinations()
     {
@@ -15,7 +16,6 @@ public class DestinationService
 
         string json = File.ReadAllText(path);
 
-        return JsonSerializer.Deserialize<List<Destination>>(json)
-               ?? new List<Destination>();
+        return JsonSerializer.Deserialize<List<Destination>>(json) ?? new List<Destination>();
     }
 }
