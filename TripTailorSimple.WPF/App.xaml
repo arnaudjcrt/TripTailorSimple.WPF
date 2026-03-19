@@ -1,7 +1,18 @@
-﻿<Application x:Class="TripTailorSimple.WPF.App"
+<Application x:Class="TripTailorSimple.WPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Views/MainWindow.xaml">
+             xmlns:vm="clr-namespace:TripTailorSimple.WPF.ViewModels"
+             xmlns:pages="clr-namespace:TripTailorSimple.WPF.Views.Pages"
+             Startup="Application_Startup">
     <Application.Resources>
+        <DataTemplate DataType="{x:Type vm:SearchViewModel}">
+            <pages:SearchView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ResultsViewModel}">
+            <pages:ResultsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TripDetailViewModel}">
+            <pages:TripDetailView />
+        </DataTemplate>
     </Application.Resources>
 </Application>
