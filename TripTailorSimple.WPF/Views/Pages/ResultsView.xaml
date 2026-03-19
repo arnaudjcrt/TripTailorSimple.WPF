@@ -3,82 +3,50 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="clr-namespace:TripTailorSimple.WPF.Converters"
              mc:Ignorable="d">
-    <Grid Background="#FFF6F8FC">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <UserControl.Resources>
+        <conv:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
+    </UserControl.Resources>
 
-        <DockPanel Margin="0,0,0,12">
-            <Button Content="← Modifier la recherche"
-                    Command="{Binding BackToSearchCommand}"
-                    Padding="14,6"
-                    Background="White"
-                    BorderBrush="#DCE4F2"/>
-            <TextBlock Text="Résultats recommandés"
-                       FontSize="24"
-                       FontWeight="Bold"
-                       Margin="14,6,0,0"/>
-        </DockPanel>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="← Modifier la recherche" Command="{Binding BackToSearchCommand}" />
+        </StackPanel>
 
-        <Border Grid.Row="1" Background="#FFF4EC" BorderBrush="#FFE4BC" BorderThickness="1" CornerRadius="10" Padding="10" Margin="0,0,0,12">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding HasResults}" Value="False">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <TextBlock Text="Aucun résultat trouvé pour ces critères. Essaie un budget plus élevé ou ajoute plus de régions."
-                       Foreground="#AA4A00"/>
-        </Border>
+        <TextBlock Text="Aucun résultat trouvé pour ces critères."
+                   Visibility="{Binding Results, Converter={StaticResource EmptyListToVisibilityConverter}}"
+                   FontSize="18"
+                   Foreground="DarkRed" />
 
-        <ListView Grid.Row="2" ItemsSource="{Binding Results}" BorderThickness="0" Background="Transparent">
+        <ListView ItemsSource="{Binding Results}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border CornerRadius="14" Background="White" BorderBrush="#E3E9F4" BorderThickness="1" Padding="12" Margin="0,0,0,12">
+                    <Border BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,10">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Border CornerRadius="10" ClipToBounds="True" Margin="0,0,14,0">
-                                <Image Source="{Binding Proposal.ImageUrl}" Stretch="UniformToFill"/>
-                            </Border>
-
-                            <StackPanel Grid.Column="1" Margin="0,2,12,0">
+                            <StackPanel>
                                 <TextBlock Text="{Binding CityCountry}" FontSize="22" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" Foreground="#4D5566" Margin="0,4,0,6"/>
-                                <WrapPanel>
-                                    <Border Background="#EEF2FF" CornerRadius="8" Padding="8,3" Margin="0,0,8,6"><TextBlock Text="{Binding Temperature}" FontWeight="SemiBold"/></Border>
-                                    <Border Background="#EAFBF0" CornerRadius="8" Padding="8,3" Margin="0,0,8,6"><TextBlock Text="{Binding TravelBadge}" FontWeight="SemiBold"/></Border>
-                                </WrapPanel>
-                                <TextBlock Text="{Binding Breakdown}" Foreground="#6D7486"/>
+                                <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" Margin="0,4,0,6"/>
+                                <TextBlock Text="{Binding Temperature}"/>
+                                <TextBlock Text="{Binding Price}" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                                <TextBlock Text="{Binding Breakdown}" Foreground="DimGray" Margin="0,4,0,0"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Price}" FontSize="26" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="16,0,0,0">
+                                <TextBlock Text="{Binding TravelBadge}" HorizontalAlignment="Right" FontWeight="Bold" Foreground="DarkSlateBlue" Margin="0,0,0,8"/>
                                 <Button Content="Voir le séjour"
-                                        Margin="0,10,0,0"
-                                        Padding="14,8"
-                                        FontWeight="Bold"
-                                        Background="#4F5BD5"
-                                        Foreground="White"
-                                        BorderBrush="#4F5BD5"
                                         Command="{Binding DataContext.OpenDetailCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                        CommandParameter="{Binding}"/>
+                                        CommandParameter="{Binding}" />
                             </StackPanel>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </Grid>
+    </DockPanel>
 </UserControl>

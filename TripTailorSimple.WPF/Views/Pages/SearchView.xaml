@@ -3,126 +3,78 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="clr-namespace:TripTailorSimple.WPF.Converters"
              mc:Ignorable="d">
-    <Grid>
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#FFF8FBFF" Offset="0"/>
-                <GradientStop Color="#FFEFF4FF" Offset="0.5"/>
-                <GradientStop Color="#FFF5FFF6" Offset="1"/>
-            </LinearGradientBrush>
-        </Grid.Background>
+    <UserControl.Resources>
+        <conv:StringEqualsConverter x:Key="StringEqualsConverter"/>
+    </UserControl.Resources>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8">
-            <StackPanel>
-                <Border Background="#4F5BD5" CornerRadius="16" Padding="20" Margin="0,0,0,16">
-                    <StackPanel>
-                        <TextBlock Text="TripTailor ✈️" FontSize="16" Foreground="White" FontWeight="SemiBold"/>
-                        <TextBlock Text="Crée un voyage incroyable en 3 clics"
-                                   FontSize="30"
-                                   FontWeight="Bold"
-                                   Foreground="White"
-                                   Margin="0,8,0,2"/>
-                        <TextBlock Text="Budget, climat, style : on te propose directement les meilleures destinations."
-                                   Foreground="#E9EEFF"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <TextBlock Text="Planifie ton voyage idéal"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       Margin="0,0,0,16"/>
+
+            <WrapPanel Margin="0,0,0,12">
+                <StackPanel Margin="0,0,14,0">
+                    <TextBlock Text="Budget max (€)"/>
+                    <TextBox Width="120" Text="{Binding Budget, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <StackPanel Margin="0,0,14,0">
+                    <TextBlock Text="Durée (jours)"/>
+                    <TextBox Width="120" Text="{Binding DurationDays, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <StackPanel Margin="0,0,14,0">
+                    <TextBlock Text="Saison"/>
+                    <ComboBox Width="140" ItemsSource="{Binding Seasons}" SelectedItem="{Binding SelectedSeason}"/>
+                </StackPanel>
+
+                <StackPanel Margin="0,0,14,0">
+                    <TextBlock Text="Climat"/>
+                    <ComboBox Width="140" ItemsSource="{Binding Climates}" SelectedItem="{Binding SelectedClimate}"/>
+                </StackPanel>
+
+                <StackPanel Margin="0,0,14,0">
+                    <TextBlock Text="Style de voyage"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Économie" Margin="0,0,8,0" Padding="10,4" Command="{Binding SelectStyleCommand}" CommandParameter="Économie"/>
+                        <Button Content="Confort" Margin="0,0,8,0" Padding="10,4" Command="{Binding SelectStyleCommand}" CommandParameter="Confort"/>
+                        <Button Content="Luxe" Padding="10,4" Command="{Binding SelectStyleCommand}" CommandParameter="Luxe"/>
                     </StackPanel>
-                </Border>
+                </StackPanel>
+            </WrapPanel>
 
-                <Border Background="White" CornerRadius="16" Padding="18" BorderBrush="#E6ECF5" BorderThickness="1">
-                    <StackPanel>
-                        <TextBlock Text="Filtres de recherche" FontSize="20" FontWeight="Bold" Margin="0,0,0,12"/>
+            <TextBlock Text="Régions" FontWeight="SemiBold"/>
+            <ItemsControl ItemsSource="{Binding Regions}" Margin="0,6,0,10">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Margin="0,0,12,8"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
-                        <Border Background="#FFF7E9" BorderBrush="#FFE3B3" BorderThickness="1" CornerRadius="12" Padding="12" Margin="0,0,0,12">
-                            <StackPanel>
-                                <TextBlock Text="Extraction auto de demande (ex: 'budget 1800€, 7 jours, climat chaud, Asie, luxe')"
-                                           FontWeight="SemiBold"
-                                           TextWrapping="Wrap"/>
-                                <Grid Margin="0,8,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0"
-                                             Text="{Binding QuickRequest, UpdateSourceTrigger=PropertyChanged}"
-                                             Padding="10,6"/>
-                                    <Button Grid.Column="1"
-                                            Margin="10,0,0,0"
-                                            Padding="14,6"
-                                            Content="Extraire"
-                                            Command="{Binding ExtractCriteriaCommand}"/>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
+            <TextBlock Text="Type de voyage" FontWeight="SemiBold"/>
+            <ComboBox Margin="0,6,0,10" Width="180" ItemsSource="{Binding TripTypes}" SelectedItem="{Binding SelectedTripType}" />
 
-                        <UniformGrid Columns="2" Margin="0,0,0,12">
-                            <StackPanel Margin="0,0,12,10">
-                                <TextBlock Text="Budget max (€)" FontWeight="SemiBold"/>
-                                <TextBox Text="{Binding Budget, UpdateSourceTrigger=PropertyChanged}" Padding="10,6" Margin="0,6,0,0"/>
-                            </StackPanel>
-
-                            <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Durée (jours)" FontWeight="SemiBold"/>
-                                <TextBox Text="{Binding DurationDays, UpdateSourceTrigger=PropertyChanged}" Padding="10,6" Margin="0,6,0,0"/>
-                            </StackPanel>
-
-                            <StackPanel Margin="0,0,12,10">
-                                <TextBlock Text="Saison" FontWeight="SemiBold"/>
-                                <ComboBox ItemsSource="{Binding Seasons}" SelectedItem="{Binding SelectedSeason}" Margin="0,6,0,0"/>
-                            </StackPanel>
-
-                            <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Climat" FontWeight="SemiBold"/>
-                                <ComboBox ItemsSource="{Binding Climates}" SelectedItem="{Binding SelectedClimate}" Margin="0,6,0,0"/>
-                            </StackPanel>
-
-                            <StackPanel Margin="0,0,12,0">
-                                <TextBlock Text="Type de voyage" FontWeight="SemiBold"/>
-                                <ComboBox ItemsSource="{Binding TripTypes}" SelectedItem="{Binding SelectedTripType}" Margin="0,6,0,0"/>
-                            </StackPanel>
-
-                            <StackPanel>
-                                <TextBlock Text="Style" FontWeight="SemiBold"/>
-                                <WrapPanel Margin="0,6,0,0">
-                                    <Button Content="Économie" Margin="0,0,8,8" Padding="12,6" Command="{Binding SelectStyleCommand}" CommandParameter="Économie"/>
-                                    <Button Content="Confort" Margin="0,0,8,8" Padding="12,6" Command="{Binding SelectStyleCommand}" CommandParameter="Confort"/>
-                                    <Button Content="Luxe" Margin="0,0,8,8" Padding="12,6" Command="{Binding SelectStyleCommand}" CommandParameter="Luxe"/>
-                                </WrapPanel>
-                            </StackPanel>
-                        </UniformGrid>
-
-                        <TextBlock Text="Continents / régions" FontWeight="SemiBold" Margin="0,0,0,6"/>
-                        <ItemsControl ItemsSource="{Binding Regions}" Margin="0,0,0,10">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Margin="0,0,10,8" Padding="10,6" CornerRadius="14" BorderBrush="#D9E2F2" BorderThickness="1">
-                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}"/>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <WrapPanel Margin="0,0,0,16">
-                            <CheckBox Content="Inclure vol" IsChecked="{Binding IncludeFlight}" Margin="0,0,18,8"/>
-                            <CheckBox Content="Inclure hôtel" IsChecked="{Binding IncludeHotel}" Margin="0,0,18,8"/>
-                            <CheckBox Content="Inclure activités" IsChecked="{Binding IncludeActivities}" Margin="0,0,18,8"/>
-                        </WrapPanel>
-
-                        <Button Content="🚀 Rechercher des séjours"
-                                Height="44"
-                                FontSize="16"
-                                FontWeight="Bold"
-                                Background="#4F5BD5"
-                                Foreground="White"
-                                BorderBrush="#4F5BD5"
-                                Command="{Binding DataContext.SearchCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                    </StackPanel>
-                </Border>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                <CheckBox Content="Inclure vol" IsChecked="{Binding IncludeFlight}" Margin="0,0,14,0"/>
+                <CheckBox Content="Inclure hôtel" IsChecked="{Binding IncludeHotel}" Margin="0,0,14,0"/>
+                <CheckBox Content="Inclure activités" IsChecked="{Binding IncludeActivities}" />
             </StackPanel>
-        </ScrollViewer>
-    </Grid>
+
+            <Button Content="Rechercher des séjours"
+                    Width="220"
+                    Height="40"
+                    FontWeight="SemiBold"
+                    Command="{Binding DataContext.SearchCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
