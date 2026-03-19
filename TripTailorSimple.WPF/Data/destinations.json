@@ -5,8 +5,17 @@
         "Region": "Europe",
         "Latitude": 48.8566,
         "Longitude": 2.3522,
-        "Description": "Ville culturelle avec monuments et musées.",
+        "Description": "Ville culturelle iconique entre monuments, gastronomie et musées.",
         "EstimatedPrice": 600
+    },
+    {
+        "City": "Lisbonne",
+        "Country": "Portugal",
+        "Region": "Europe",
+        "Latitude": 38.7223,
+        "Longitude": -9.1393,
+        "Description": "Capitale ensoleillée idéale pour city break et rooftop sunset.",
+        "EstimatedPrice": 720
     },
     {
         "City": "Rome",
@@ -14,8 +23,17 @@
         "Region": "Europe",
         "Latitude": 41.9028,
         "Longitude": 12.4964,
-        "Description": "Destination historique idéale pour visiter.",
+        "Description": "Destination historique parfaite pour culture, art et cuisine.",
         "EstimatedPrice": 700
+    },
+    {
+        "City": "Reykjavik",
+        "Country": "Islande",
+        "Region": "Europe",
+        "Latitude": 64.1466,
+        "Longitude": -21.9426,
+        "Description": "Portail nordique vers volcans, lagons et aurores boréales.",
+        "EstimatedPrice": 1450
     },
     {
         "City": "Marrakech",
@@ -23,8 +41,17 @@
         "Region": "Afrique",
         "Latitude": 31.6295,
         "Longitude": -7.9811,
-        "Description": "Ville chaleureuse avec souks et ambiance locale.",
+        "Description": "Ville chaleureuse avec souks, palais et ambiance locale unique.",
         "EstimatedPrice": 500
+    },
+    {
+        "City": "Le Cap",
+        "Country": "Afrique du Sud",
+        "Region": "Afrique",
+        "Latitude": -33.9249,
+        "Longitude": 18.4241,
+        "Description": "Entre océan et montagnes, excellent mix nature et lifestyle.",
+        "EstimatedPrice": 1300
     },
     {
         "City": "Tokyo",
@@ -32,16 +59,61 @@
         "Region": "Asie",
         "Latitude": 35.6762,
         "Longitude": 139.6503,
-        "Description": "Grande ville moderne avec culture japonaise.",
+        "Description": "Mégapole futuriste mêlant tradition, gastronomie et culture pop.",
         "EstimatedPrice": 1600
+    },
+    {
+        "City": "Séoul",
+        "Country": "Corée du Sud",
+        "Region": "Asie",
+        "Latitude": 37.5665,
+        "Longitude": 126.978,
+        "Description": "Ville ultra dynamique, idéale pour shopping, food et tech.",
+        "EstimatedPrice": 1400
+    },
+    {
+        "City": "Bali",
+        "Country": "Indonésie",
+        "Region": "Asie",
+        "Latitude": -8.4095,
+        "Longitude": 115.1889,
+        "Description": "Île tropicale parfaite pour détente, surf et retraites bien-être.",
+        "EstimatedPrice": 1250
     },
     {
         "City": "New York",
         "Country": "États-Unis",
         "Region": "Amérique",
         "Latitude": 40.7128,
-        "Longitude": -74.0060,
-        "Description": "Ville dynamique pour un voyage urbain.",
+        "Longitude": -74.006,
+        "Description": "Métropole iconique pour un voyage urbain intense et créatif.",
         "EstimatedPrice": 1800
+    },
+    {
+        "City": "Montréal",
+        "Country": "Canada",
+        "Region": "Amérique",
+        "Latitude": 45.5017,
+        "Longitude": -73.5673,
+        "Description": "Ambiance européenne en Amérique avec culture et festivals.",
+        "EstimatedPrice": 1200
+    },
+    {
+        "City": "Rio de Janeiro",
+        "Country": "Brésil",
+        "Region": "Amérique",
+        "Latitude": -22.9068,
+        "Longitude": -43.1729,
+        "Description": "Destination vibrante entre plages, reliefs et énergie carioca.",
+        "EstimatedPrice": 1500
+    },
+    {
+        "City": "Sydney",
+        "Country": "Australie",
+        "Region": "Océanie",
+        "Latitude": -33.8688,
+        "Longitude": 151.2093,
+        "Description": "Ville côtière premium, parfaite pour un séjour lifestyle.",
+        "EstimatedPrice": 2100
     }
 ]
