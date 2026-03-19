@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using TripTailorSimple.WPF.Models;
 using TripTailorSimple.WPF.ViewModels.Base;
@@ -47,7 +48,15 @@ public class SearchViewModel : ViewModelBase
     private bool _includeActivities = true;
     public bool IncludeActivities { get => _includeActivities; set => SetProperty(ref _includeActivities, value); }
 
+    private string _quickRequest = string.Empty;
+    public string QuickRequest
+    {
+        get => _quickRequest;
+        set => SetProperty(ref _quickRequest, value);
+    }
+
     public ICommand SelectStyleCommand { get; }
+    public ICommand ExtractCriteriaCommand { get; }
 
     public SearchViewModel()
     {
@@ -58,6 +67,62 @@ public class SearchViewModel : ViewModelBase
                 SelectedTravelStyle = style;
             }
         });
+
+        ExtractCriteriaCommand = new RelayCommand(ExtractFromQuickRequest);
+    }
+
+    private void ExtractFromQuickRequest()
+    {
+        if (string.IsNullOrWhiteSpace(QuickRequest))
+        {
+            return;
+        }
+
+        string text = QuickRequest.ToLowerInvariant();
+
+        var budgetMatch = Regex.Match(text, @"(\d{3,5})\s*€?");
+        if (budgetMatch.Success && int.TryParse(budgetMatch.Groups[1].Value, out int parsedBudget))
+        {
+            Budget = Math.Clamp(parsedBudget, 200, 20000);
+        }
+
+        var daysMatch = Regex.Match(text, @"(\d{1,2})\s*(jour|jours|j)");
+        if (daysMatch.Success && int.TryParse(daysMatch.Groups[1].Value, out int parsedDays))
+        {
+            DurationDays = Math.Clamp(parsedDays, 1, 21);
+        }
+
+        if (text.Contains("froid")) SelectedClimate = "Froid";
+        else if (text.Contains("chaud") || text.Contains("soleil")) SelectedClimate = "Chaud";
+        else if (text.Contains("temp") || text.Contains("doux")) SelectedClimate = "Tempéré";
+
+        if (text.Contains("eco") || text.Contains("pas cher") || text.Contains("économie")) SelectedTravelStyle = "Économie";
+        else if (text.Contains("luxe") || text.Contains("premium")) SelectedTravelStyle = "Luxe";
+        else if (text.Contains("confort")) SelectedTravelStyle = "Confort";
+
+        if (text.Contains("nature")) SelectedTripType = "Nature";
+        else if (text.Contains("culture")) SelectedTripType = "Culture";
+        else if (text.Contains("detente") || text.Contains("détente") || text.Contains("relax")) SelectedTripType = "Détente";
+        else if (text.Contains("city") || text.Contains("ville")) SelectedTripType = "City Break";
+
+        if (text.Contains("été")) SelectedSeason = "Été";
+        else if (text.Contains("hiver")) SelectedSeason = "Hiver";
+        else if (text.Contains("printemps")) SelectedSeason = "Printemps";
+        else if (text.Contains("automne")) SelectedSeason = "Automne";
+
+        if (text.Contains("oceanie") || text.Contains("océanie")) SelectOnlyRegion("Océanie");
+        else if (text.Contains("europe")) SelectOnlyRegion("Europe");
+        else if (text.Contains("asie")) SelectOnlyRegion("Asie");
+        else if (text.Contains("afrique")) SelectOnlyRegion("Afrique");
+        else if (text.Contains("amerique") || text.Contains("amérique")) SelectOnlyRegion("Amérique");
+    }
+
+    private void SelectOnlyRegion(string regionName)
+    {
+        foreach (var region in Regions)
+        {
+            region.IsSelected = region.Name == regionName;
+        }
     }
 
     public SearchCriteria BuildCriteria()
